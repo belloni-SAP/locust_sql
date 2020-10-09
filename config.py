@@ -9,3 +9,11 @@ default_info = {
 }
 
 
+default_info_hana = {
+    "host": "localhost",
+    "port": # 
+    "user": #
+    "password": #
+    "collection_name": "Food_1",
+    "filename": "/tmp/Food/Food_1.csv"
+}

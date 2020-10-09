@@ -1,36 +1,28 @@
-import gevent
-import gevent.monkey
-
-gevent.monkey.patch_all()  # noqa
-
-import psycogreen.gevent
-
-psycogreen.gevent.patch_psycopg()  # noqa
-
 import time
 import sys
 from locust import User, task, between
-from config import default_info
+from config import default_info_hana
 
-import psycopg2 as pg
+try:
+    from hdbcli import dbapi as hana_driver
+except ImportError:
+    import pyhdb as hana_driver
 
 
-class PostgresJSClient():
+class HanaClient():
     def __init__(self, environment):
         self._connection = None
         self._cursor = None
         self._environment = environment
 
     def connect(self):
-        connection_config = default_info
-        self._connection = pg.connect(
-            host=connection_config['host'],
+        connection_config = default_info_hana
+        self._connection = hana_driver.connect(
+            address=connection_config['host'],
             port=connection_config['port'],
             user=connection_config['user'],
             password=connection_config['password'],
-            database=connection_config['database']
         )
-        self._connection.autocommit = True
         self._cursor = self._connection.cursor()
 
     def disconnect(self):
@@ -67,14 +59,14 @@ class PostgresJSClient():
             return result
 
 
-class PostgresJSUser_base(User):
+class HanaUser_base(User):
     abstract = True  # Locust doesn't instantiate this class
 
     # The parent parameter is used by locust internally
     def __init__(self, parent):
-        super(PostgresJSUser_base, self).__init__(parent)
+        super(HanaUser_base, self).__init__(parent)
         # Client needs a reference to the environment to register events for the stats
-        self._client = PostgresJSClient(self.environment)
+        self._client = HanaClient(self.environment)
         self._client.connect()
 
     def __del__(self):
@@ -83,13 +75,13 @@ class PostgresJSUser_base(User):
 
 # ============================================================================ #
 
-class GenericSqlTest(PostgresJSUser_base):
+class GenericSqlTest(HanaUser_base):
     wait_time = between(0, 0)
 
     def __init__(self, parent):
         super().__init__(parent)
         self._list_queries = [
-            ["0", """SELECT Food_1->>'device' AS "device" FROM "Food_1" GROUP BY Food_1->>'device' ORDER BY "device" ASC ;"""]
+            ["0", """SELECT "Food_1"."device" AS "device" FROM "Food_1" GROUP BY "Food_1"."device" ORDER BY "device" ASC ;"""]
         ]
         self._index = 0
         self._global_count = 0
