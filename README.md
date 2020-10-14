@@ -24,4 +24,4 @@ To start the scripts it is needed
     * `locust`
     * `psycopg2` 
     
-postgres fixed with psycogreen patch (https://github.com/psycopg/psycogreen/, https://github.com/locustio/locust/issues/1588)
+> postgres fixed with psycogreen patch (https://github.com/psycopg/psycogreen/, https://github.com/locustio/locust/issues/1588)
