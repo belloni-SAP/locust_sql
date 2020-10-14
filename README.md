@@ -22,4 +22,6 @@ To start the scripts it is needed
 * docker (the user started the script should have `sudo` rights)
 * python packages: 
     * `locust`
-    * `psycopg2`
+    * `psycopg2` 
+    
+postgres fixed with psycogreen patch (https://github.com/psycopg/psycogreen/, https://github.com/locustio/locust/issues/1588)
