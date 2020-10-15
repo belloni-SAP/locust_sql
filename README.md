@@ -25,4 +25,5 @@ To start the scripts it is needed
     * `psycopg2` 
     
 > postgres fixed with psycogreen patch (https://github.com/psycopg/psycogreen/, https://github.com/locustio/locust/issues/1588)
+
 > we used https://pypi.org/project/hdbcli/ as HANA client
